@@ -17,7 +17,7 @@ type Service struct {
 }
 
 func NewCatwalkClient() *Service {
-	log.WithField("secretToken", secretToken).Debugln("starting catwalk client")
+	//log.WithField("secretToken", secretToken).Debugln("starting catwalk client")
 	return &Service{secretToken: secretToken, bearerToken: &BearerToken{}}
 }
 
@@ -107,20 +107,29 @@ func (b *BearerToken) Valid() bool {
 type CatwalkTimeseriesPayload struct {
 	Grain string   `json:"grain"`
 	Model []string `json:"model"`
+	Span  string   `json:"span"`
 	Id    int      `json:"id"`
 	Tz    string   `json:"tz"`
+	Start string   `json:"start"`
 }
 
 func NewCatwalkTimeseriesRequest(model []string) (*http.Request, error) {
 	payload := &CatwalkTimeseriesPayload{
-		Grain: "daily",
+		Grain: "aggregate",
 		Model: model,
-		Id:    2085268,
+		Span:  "alltime",
+		//Id:    1035665473,
+		Id:    100949655599,
 		Tz:    time.UTC.String(),
+		Start: "2020-12-20T00:00:00Z",
 	}
-	url := fmt.Sprintf("%s?id=%d&tz=%s&grain=%s", tsEndpoint, payload.Id, payload.Tz, payload.Grain)
+	// start - staging
+	//url := fmt.Sprintf("%s?id=%d&span=%s&tz=%s&grain=%s&start=%s", tsEndpoint, payload.Id, payload.Span, payload.Tz, payload.Grain, payload.Start)
+	url := fmt.Sprintf("%s?id=%d&span=%s&tz=%s&grain=%s", tsEndpoint, payload.Id, payload.Span, payload.Tz, payload.Grain)
+	//url := fmt.Sprintf("%s?id=%d&tz=%s&grain=hourly", tsEndpoint, payload.Id, payload.Tz)
 	for _, v := range model {
 		url = url + "&model=" + v
 	}
+	log.WithField("ReqUri", url).Debugln("created request")
 	return http.NewRequest("GET", url, nil)
 }
