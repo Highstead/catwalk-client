@@ -118,15 +118,11 @@ func NewCatwalkTimeseriesRequest(model []string) (*http.Request, error) {
 		Grain: "aggregate",
 		Model: model,
 		Span:  "alltime",
-		//Id:    1035665473,
 		Id:    100949655599,
 		Tz:    time.UTC.String(),
 		Start: "2020-12-20T00:00:00Z",
 	}
-	// start - staging
-	//url := fmt.Sprintf("%s?id=%d&span=%s&tz=%s&grain=%s&start=%s", tsEndpoint, payload.Id, payload.Span, payload.Tz, payload.Grain, payload.Start)
 	url := fmt.Sprintf("%s?id=%d&span=%s&tz=%s&grain=%s", tsEndpoint, payload.Id, payload.Span, payload.Tz, payload.Grain)
-	//url := fmt.Sprintf("%s?id=%d&tz=%s&grain=hourly", tsEndpoint, payload.Id, payload.Tz)
 	for _, v := range model {
 		url = url + "&model=" + v
 	}
